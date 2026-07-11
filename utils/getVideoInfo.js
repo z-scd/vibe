@@ -7,7 +7,7 @@ const youtube = google.youtube({
   auth: apiKey,
 });
 
-const getVideoInfo = async (videoId) => {
+export default getVideoInfo = async (videoId) => {
   const res = await youtube.videos.list({
     id: videoId,
     part: "snippet",
@@ -16,10 +16,10 @@ const getVideoInfo = async (videoId) => {
   const snippet = res.data.items[0].snippet;
   const videoInfo = {
     publishedAt: snippet.publishedAt,
-    title: snippet.title,
+    videoTitle: snippet.title,
     channelTitle: snippet.channelTitle,
-    thumbnail: snippet.thumbnails.standard.url,
+    channelThumbnail: snippet.thumbnails.standard.url,
   };
-};
 
-getVideoInfo("WRMqBdRFrB0");
+  return videoInfo;
+};

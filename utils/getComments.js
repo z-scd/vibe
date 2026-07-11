@@ -7,7 +7,7 @@ const youtube = google.youtube({
   auth: apiKey,
 });
 
-const getComments = async (videoId) => {
+export default  getComments = async (videoId) => {
   const res = await youtube.commentThreads.list({
     videoId: videoId,
     maxResults: 10,
