@@ -7,7 +7,7 @@ const youtube = google.youtube({
   auth: apiKey,
 });
 
-export default  getComments = async (videoId) => {
+export default async function getComments(videoId) {
   const res = await youtube.commentThreads.list({
     videoId: videoId,
     maxResults: 10,
@@ -17,7 +17,6 @@ export default  getComments = async (videoId) => {
   const commentsObject = [];
 
   res.data.items.forEach((item) => {
-    comments.push(item.snippet.topLevelComment.snippet.textDisplay);
     const snippet = item.snippet.topLevelComment.snippet;
     commentsObject.push({
       comment: snippet.textDisplay,
@@ -28,7 +27,5 @@ export default  getComments = async (videoId) => {
     });
   });
 
-  commentsObject.forEach((comment) => console.log(comment));
-
   return commentsObject;
-};
+}

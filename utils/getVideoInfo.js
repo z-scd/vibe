@@ -7,7 +7,7 @@ const youtube = google.youtube({
   auth: apiKey,
 });
 
-export default getVideoInfo = async (videoId) => {
+export default async function getVideoInfo(videoId) {
   const res = await youtube.videos.list({
     id: videoId,
     part: "snippet",
@@ -22,4 +22,4 @@ export default getVideoInfo = async (videoId) => {
   };
 
   return videoInfo;
-};
+}
