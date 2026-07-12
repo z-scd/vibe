@@ -17,6 +17,7 @@ import { useThumbnail } from "@/contexts/ThumbnailContext";
 import { useComments } from "@/contexts/CommentsContext";
 import { useVideo } from "@/contexts/VideoContext";
 import { useUrl } from "@/contexts/UrlContext";
+import { LoaderIcon } from "lucide-react";
 export default function Form() {
   const { setUrl } = useUrl();
   const { setComments } = useComments();
@@ -25,6 +26,8 @@ export default function Form() {
   const [formError, setFormError] = useState(null);
   const [fetchedData, setFetchedData] = useState(null);
   const [formInput, setFormInput] = useState("");
+  const [input, setInput] = useState("");
+  const [gotResponse, setGotResponse] = useState(false);
   const urlSchema = z.object({
     url: z
       .url("Must be a valid URL!")
@@ -36,10 +39,14 @@ export default function Form() {
       ),
   });
 
+  const handleChange = (e) => {
+    setInput(e.target.value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("submitted");
-
+    setGotResponse(false);
+    setInput("");
     const form = e.target;
     const formData = new FormData(form);
     const formValues = {
@@ -74,8 +81,8 @@ export default function Form() {
     }
 
     const json = await response.json();
+    if (json) setGotResponse(true);
     setFetchedData(json);
-    console.log(fetchedData);
     setThumbnailUrl(json?.data?.videoInfo?.channelThumbnail);
     setTitle(json?.data?.videoInfo?.videoTitle);
     setVideoInfo(json?.data?.videoInfo);
@@ -107,6 +114,8 @@ export default function Form() {
               <Input
                 id="url"
                 name="url"
+                value={input}
+                onChange={handleChange}
                 className="text-base placeholder:text-muted-foreground"
                 placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
               />
@@ -114,8 +123,9 @@ export default function Form() {
             <Button
               className="w-full py-3 text-base font-semibold"
               type="submit"
+              disabled={!input && gotResponse && true}
             >
-              Submit
+              {gotResponse ? "Submit" : <LoaderIcon className="animate-spin" />}
             </Button>
           </form>
         </CardContent>
