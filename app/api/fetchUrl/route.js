@@ -1,9 +1,9 @@
 import getComments from "@/utils/getComments";
 import getVideoInfo from "@/utils/getVideoInfo";
-
+import getYouTubeVideoId from "@/utils/getVideoId";
 export async function POST(request) {
   const body = await request.json();
-  const id = body.url.split("=").at(-1);
+  const id = getYouTubeVideoId(body.url);
   const comments = await getComments(id);
   const { publishedAt, videoTitle, channelTitle, channelThumbnail } =
     await getVideoInfo(id);
@@ -24,6 +24,6 @@ export async function POST(request) {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }

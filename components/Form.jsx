@@ -125,7 +125,11 @@ export default function Form() {
               type="submit"
               disabled={!input && gotResponse && true}
             >
-              {gotResponse ? "Submit" : <LoaderIcon className="animate-spin" />}
+              {input && gotResponse ? (
+                "Submit"
+              ) : (
+                <LoaderIcon className="animate-spin" />
+              )}
             </Button>
           </form>
         </CardContent>
