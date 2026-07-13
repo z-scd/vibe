@@ -23,11 +23,9 @@ export default function Form() {
   const { setComments } = useComments();
   const { setVideoInfo } = useVideo();
   const { setThumbnailUrl, setTitle } = useThumbnail();
-  const [formError, setFormError] = useState(null);
-  const [fetchedData, setFetchedData] = useState(null);
-  const [formInput, setFormInput] = useState("");
   const [input, setInput] = useState("");
-  const [gotResponse, setGotResponse] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const urlSchema = z.object({
     url: z
       .url("Must be a valid URL!")
@@ -45,6 +43,7 @@ export default function Form() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setGotResponse(false);
     setInput("");
     const form = e.target;
@@ -56,16 +55,14 @@ export default function Form() {
     const result = urlSchema.safeParse(formValues);
     if (!result.success) {
       const errorMessage = result.error.issues[0].message;
-      setFormError(errorMessage);
       toast("Error Occured", {
         description: errorMessage,
         position: "top-center",
       });
+      setLoading(false);
       return;
     }
 
-    setFormError(null);
-    setFormInput(formValues.url);
     setUrl(formValues.url);
 
     const response = await fetch("/api/fetchUrl", {
@@ -82,11 +79,11 @@ export default function Form() {
 
     const json = await response.json();
     if (json) setGotResponse(true);
-    setFetchedData(json);
     setThumbnailUrl(json?.data?.videoInfo?.channelThumbnail);
     setTitle(json?.data?.videoInfo?.videoTitle);
     setVideoInfo(json?.data?.videoInfo);
     setComments(json?.data?.comments);
+    setLoading(false);
   };
 
   return (
@@ -123,13 +120,9 @@ export default function Form() {
             <Button
               className="w-full py-3 text-base font-semibold"
               type="submit"
-              disabled={!input && gotResponse && true}
+              disabled={!input || loading}
             >
-              {input && gotResponse ? (
-                "Submit"
-              ) : (
-                <LoaderIcon className="animate-spin" />
-              )}
+              {loading ? <LoaderIcon className="animate-spin" /> : "Submit"}
             </Button>
           </form>
         </CardContent>
