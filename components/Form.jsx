@@ -1,7 +1,7 @@
 "use client";
 import * as z from "zod";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
@@ -44,7 +44,6 @@ export default function Form() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setGotResponse(false);
     setInput("");
     const form = e.target;
     const formData = new FormData(form);
@@ -78,7 +77,6 @@ export default function Form() {
     }
 
     const json = await response.json();
-    if (json) setGotResponse(true);
     setThumbnailUrl(json?.data?.videoInfo?.channelThumbnail);
     setTitle(json?.data?.videoInfo?.videoTitle);
     setVideoInfo(json?.data?.videoInfo);
